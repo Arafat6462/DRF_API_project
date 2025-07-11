@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: drf_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DB_NAME=minitrello_db
+      - DB_USER=minitrello_user
+      - DB_PASSWORD=minitrello_password
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14-alpine
+    container_name: drf_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=minitrello_db
+      - POSTGRES_USER=minitrello_user
+      - POSTGRES_PASSWORD=minitrello_password
+
+volumes:
+  postgres_data:
