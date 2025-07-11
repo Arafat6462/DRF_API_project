@@ -27,5 +27,16 @@ services:
       - POSTGRES_USER=minitrello_user
       - POSTGRES_PASSWORD=minitrello_password
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: drf_pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
