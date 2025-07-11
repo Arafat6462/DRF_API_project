@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   backend:
     build: .
@@ -16,6 +14,7 @@ services:
       - DB_PORT=5432
     depends_on:
       - db
+    command: tail -f /dev/null
 
   db:
     image: postgres:14-alpine
@@ -26,17 +25,6 @@ services:
       - POSTGRES_DB=minitrello_db
       - POSTGRES_USER=minitrello_user
       - POSTGRES_PASSWORD=minitrello_password
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: drf_pgadmin
-    ports:
-      - "5050:80"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-    depends_on:
-      - db
 
 volumes:
   postgres_data:
