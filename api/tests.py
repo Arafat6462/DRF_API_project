@@ -83,3 +83,21 @@ class ProjectTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['name'], 'Test Project')
+
+    def test_complete_project_action(self):
+        """
+        Ensure the owner of a project can use the 'complete' custom action.
+        """
+        # The URL for a detail action is reversed with the 'pk' (primary key) argument.
+        url = reverse('project-complete', args=[self.project.id])
+        response = self.client.post(url, format='json')
+
+        # Assert the request was successful
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Assert the metadata in the response has been updated
+        self.assertEqual(response.data['metadata']['status'], 'completed')
+
+        # Refresh the model instance from the database to check if the change was saved
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.metadata['status'], 'completed')

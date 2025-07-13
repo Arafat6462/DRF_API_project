@@ -1,4 +1,6 @@
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from .models import Project
 from .serializers import ProjectSerializer, UserSerializer
 from django.contrib.auth.models import User
@@ -13,7 +15,6 @@ class RegisterView(generics.CreateAPIView):
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
-    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
 
@@ -22,3 +23,14 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    @action(detail=True, methods=['post'], url_path='complete')
+    def complete(self, request, pk=None):
+        """
+        Mark a project as complete.
+        """
+        project = self.get_object()
+        project.metadata['status'] = 'completed'
+        project.save()
+        serializer = self.get_serializer(project)
+        return Response(serializer.data)
