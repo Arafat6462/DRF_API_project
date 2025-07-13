@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Trello API Documentation</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #0d6efd;
+            --border-color: #dee2e6;
+            --code-bg: #e9ecef;
+            --get-color: #0d6efd;
+            --post-color: #198754;
+            --put-color: #fd7e14;
+            --delete-color: #dc3545;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+        }
+        #sidebar {
+            width: 260px;
+            position: fixed;
+            height: 100%;
+            background-color: #fff;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+        }
+        #sidebar h1 {
+            font-size: 1.5em;
+            margin-top: 0;
+        }
+        #sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        #sidebar ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+        #sidebar ul li a:hover {
+            background-color: var(--bg-color);
+        }
+        #main-content {
+            margin-left: 300px;
+            padding: 30px;
+            width: calc(100% - 300px);
+        }
+        .endpoint {
+            background-color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .endpoint-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .endpoint-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .endpoint-details {
+            padding: 20px;
+        }
+        .method {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1em;
+            margin-right: 10px;
+            text-transform: uppercase;
+        }
+        .method-get { background-color: var(--get-color); }
+        .method-post { background-color: var(--post-color); }
+        .method-put { background-color: var(--put-color); }
+        .method-patch { background-color: var(--put-color); }
+        .method-delete { background-color: var(--delete-color); }
+        .url {
+            font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+            background-color: var(--code-bg);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        pre {
+            background-color: var(--code-bg);
+            padding: 15px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: "SF Mono", "Fira Code", "Fira Mono", "Roboto Mono", monospace;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th {
+            font-weight: 600;
+        }
+        .required {
+            color: var(--delete-color);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<nav id="sidebar">
+    <h1>API Documentation</h1>
+    <ul>
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#authentication">Authentication</a></li>
+        <li>
+            <a href="#projects">Projects API</a>
+            <ul>
+                <li><a href="#projects-list">List Projects</a></li>
+                <li><a href="#projects-create">Create Project</a></li>
+                <li><a href="#projects-retrieve">Retrieve Project</a></li>
+                <li><a href="#projects-update">Update Project</a></li>
+                <li><a href="#projects-delete">Delete Project</a></li>
+                <li><a href="#projects-complete">Complete Project</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+
+<div id="main-content">
+    <section id="introduction" class="endpoint">
+        <div class="endpoint-header">
+            <h2>Introduction</h2>
+        </div>
+        <div class="endpoint-details">
+            <p>Welcome to the Mini-Trello API. This document provides a detailed guide on how to interact with the API endpoints.</p>
+            <p>The base URL for all endpoints is: <code class="url">http://localhost:8000/api/</code></p>
+            <p>All protected endpoints require a JWT Bearer Token in the Authorization header.</p>
+        </div>
+    </section>
+
+    <section id="authentication" class="endpoint">
+        <div class="endpoint-header">
+            <h2>Authentication</h2>
+        </div>
+        <div class="endpoint-details">
+            <p>The API uses JSON Web Tokens (JWT) for authentication. The flow is to register a user, obtain tokens, and then use the access token for subsequent requests.</p>
+            
+            <h3 id="auth-register">User Registration</h3>
+            <p><span class="method method-post">POST</span> <code class="url">/auth/register/</code></p>
+            <p>Creates a new user account. This is a public endpoint.</p>
+            <h4>Request Body:</h4>
+            <pre><code>{
+    "username": "your_username",
+    "password": "your_password"
+}</code></pre>
+
+            <h3 id="auth-login">Obtain JWT Tokens</h3>
+            <p><span class="method method-post">POST</span> <code class="url">/auth/token/</code></p>
+            <p>Authenticates a user and returns an access and refresh token pair.</p>
+            <h4>Request Body:</h4>
+            <pre><code>{
+    "username": "your_username",
+    "password": "your_password"
+}</code></pre>
+            <h4>Success Response (200 OK):</h4>
+            <pre><code>{
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</code></pre>
+
+            <h3 id="auth-refresh">Refresh Access Token</h3>
+            <p><span class="method method-post">POST</span> <code class="url">/auth/token/refresh/</code></p>
+            <p>Takes a valid refresh token and returns a new access token.</p>
+            <h4>Request Body:</h4>
+            <pre><code>{
+    "refresh": "your_refresh_token"
+}</code></pre>
+
+            <h3>Making Authenticated Requests</h3>
+            <p>For all protected endpoints, you must include the access token in the `Authorization` header as a Bearer token.</p>
+            <pre><code>Authorization: Bearer &lt;your_access_token&gt;</code></pre>
+        </div>
+    </section>
+
+    <section id="projects" class="endpoint">
+        <div class="endpoint-header">
+            <h2>Projects API</h2>
+        </div>
+        <div class="endpoint-details">
+            <p>Endpoints for managing user projects. All endpoints here are protected and require authentication.</p>
+
+            <h3 id="projects-list">List Projects</h3>
+            <p><span class="method method-get">GET</span> <code class="url">/projects/</code></p>
+            <p>Returns a list of all projects owned by the currently authenticated user.</p>
+            <h4>Success Response (200 OK):</h4>
+            <pre><code>[
+    {
+        "id": 1,
+        "name": "My First Project",
+        "description": "A description of the project.",
+        "metadata": {},
+        "created_at": "2025-07-13T12:00:00Z",
+        "updated_at": "2025-07-13T12:00:00Z",
+        "owner": 1
+    }
+]</code></pre>
+
+            <h3 id="projects-create">Create Project</h3>
+            <p><span class="method method-post">POST</span> <code class="url">/projects/</code></p>
+            <p>Creates a new project. The owner is automatically set to the authenticated user.</p>
+            <h4>Request Body Fields:</h4>
+            <table>
+                <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+                <tbody>
+                    <tr><td>name <span class="required">*</span></td><td>string</td><td>The name of the project.</td></tr>
+                    <tr><td>description</td><td>string</td><td>A detailed description of the project.</td></tr>
+                    <tr><td>metadata</td><td>JSON object</td><td>Any custom key-value data for the project.</td></tr>
+                </tbody>
+            </table>
+            <h4>Example Request:</h4>
+            <pre><code>{
+    "name": "New API Project",
+    "description": "A project created via the API documentation.",
+    "metadata": { "priority": "high" }
+}</code></pre>
+
+            <h3 id="projects-retrieve">Retrieve Project</h3>
+            <p><span class="method method-get">GET</span> <code class="url">/projects/{id}/</code></p>
+            <p>Retrieves the details of a single project. You must be the owner to view it.</p>
+
+            <h3 id="projects-update">Update Project</h3>
+            <p><span class="method method-put">PUT</span> <span class="method method-patch">PATCH</span> <code class="url">/projects/{id}/</code></p>
+            <p>Updates a project. `PUT` requires all fields, while `PATCH` allows partial updates. You must be the owner.</p>
+            <h4>Example PATCH Request:</h4>
+            <pre><code>{
+    "description": "An updated description."
+}</code></pre>
+
+            <h3 id="projects-delete">Delete Project</h3>
+            <p><span class="method method-delete">DELETE</span> <code class="url">/projects/{id}/</code></p>
+            <p>Permanently deletes a project. You must be the owner. Returns a `204 No Content` response on success.</p>
+
+            <h3 id="projects-complete">Complete Project (Custom Action)</h3>
+            <p><span class="method method-post">POST</span> <code class="url">/projects/{id}/complete/</code></p>
+            <p>A custom action to mark a project as complete. This sets a `status` key in the project's `metadata` field.</p>
+            <h4>Success Response (200 OK):</h4>
+            <pre><code>{
+    "id": 1,
+    "name": "New API Project",
+    "description": "An updated description.",
+    "metadata": {
+        "priority": "high",
+        "status": "completed"
+    },
+    ...
+}</code></pre>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
