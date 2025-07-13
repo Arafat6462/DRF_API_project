@@ -94,7 +94,7 @@ By the end of this project, we will have mastered the practical application of:
     - **DRF Routers:** Understand how the `@action` decorator dynamically adds a new route to the list of URLs managed by the `ViewSet`'s router.
 - **Connection to Final Project:** This directly prepares us for the `resume_data` `JSONField` and the `/api/resumes/{id}/download/` custom action.
 
-## 5. The Learning Notebook Workflow
+## 6. The Learning Notebook Workflow
 
 To maximize our learning, we will maintain a `learning_log.md` file throughout the project. This will be our shared, dynamic notebook.
 
@@ -102,7 +102,7 @@ To maximize our learning, we will maintain a `learning_log.md` file throughout t
 - **Action:** Upon your approval, I will append this summary to the `learning_log.md` file.
 - **Outcome:** By the end of the project, you will have a comprehensive, personalized logbook detailing every part of our journey, serving as an invaluable reference for all future projects.
 
-## 6. My Guiding Principles
+## 7. My Guiding Principles
 
 - I will always explain the concepts behind a piece of code before or during its implementation.
 - I will focus on the data flow and the "why" behind a design choice.
