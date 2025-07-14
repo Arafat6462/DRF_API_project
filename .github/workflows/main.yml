@@ -39,7 +39,7 @@ jobs:
       # The "--no-deps" flag tells docker-compose to not rebuild the image, as we just did that in the previous step.
       # The "pytest" at the end is the command that is run inside the container.
       - name: Run tests
-        run: docker compose run --rm backend pytest
+        run: docker compose run --rm backend python manage.py test
 
   #--------------------------------------------------
   # JOB 2: Continuous Deployment (CD)
