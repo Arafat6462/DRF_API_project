@@ -3,10 +3,10 @@
 name: Django CI/CD
 
 # This section defines the trigger for the workflow.
-# We are telling GitHub to run this pipeline automatically on every "push" event to the "main" branch.
+# We are telling GitHub to run this pipeline automatically on every "push" event to the "master" branch.
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 # This section defines the jobs that will be executed as part of the pipeline.
 jobs:
