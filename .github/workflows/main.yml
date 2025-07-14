@@ -31,15 +31,19 @@ jobs:
       # Step 2: Build the Docker containers
       # This command uses your docker-compose.yml file to build the images for your services (backend and db).
       # It doesn't run them yet, it just builds them. This is a crucial check to ensure your Dockerfile is valid.
-      - name: Build the Docker images
-        run: docker compose build
+      - name: Build and start services
+        run: docker compose up --build -d
 
       # Step 3: Run tests using pytest
       # This command starts the services and executes the tests inside the "backend" container.
       # The "--no-deps" flag tells docker-compose to not rebuild the image, as we just did that in the previous step.
       # The "pytest" at the end is the command that is run inside the container.
       - name: Run tests
-        run: docker compose run --rm backend python manage.py test
+        run: docker compose exec backend python manage.py test
+
+      - name: Stop services
+        if: always()
+        run: docker compose down
 
   #--------------------------------------------------
   # JOB 2: Continuous Deployment (CD)

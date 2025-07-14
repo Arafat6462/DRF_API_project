@@ -13,7 +13,8 @@ services:
       - DB_HOST=db
       - DB_PORT=5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     command: python manage.py runserver 0.0.0.0:8000
     # command: tail -f /dev/null
 
@@ -26,6 +27,11 @@ services:
       - POSTGRES_DB=minitrello_db
       - POSTGRES_USER=minitrello_user
       - POSTGRES_PASSWORD=minitrello_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minitrello_user -d minitrello_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   postgres_data:
